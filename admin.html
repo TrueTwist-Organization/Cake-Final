@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Sweet Blast</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --primary: #d4af37;
+            --secondary: #301934;
+            --bg: #fff1f3;
+        }
+        body { background: var(--bg); color: var(--secondary); font-family: 'Poppins', sans-serif; }
+        .admin-header {
+            background: var(--white);
+            padding: 1.5rem 0;
+            box-shadow: 0 5px 25px rgba(48, 25, 52, 0.05);
+            margin-bottom: 3rem;
+            position: sticky; top: 0; z-index: 100;
+        }
+        .order-card {
+            background: white; border-radius: 20px; padding: 2rem; margin-bottom: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03); border: 1px solid rgba(212, 175, 55, 0.1);
+            display: flex; justify-content: space-between; align-items: center; transition: 0.3s;
+        }
+        .order-card:hover { transform: translateY(-5px); box-shadow: 0 15px 45px rgba(212, 175, 55, 0.1); }
+        .order-id { font-weight: 700; color: var(--primary); font-size: 1.2rem; }
+        .order-tag { background: var(--bg); padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; color: var(--secondary); }
+        .order-detail { font-size: 0.9rem; color: #666; margin: 5px 0; }
+        .no-orders { text-align: center; padding: 5rem; color: #aaa; font-style: italic; }
+        .btn-clear { background: #ff4757; color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <header class="admin-header">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <img src="images/logo.png" alt="Logo" style="height: 50px;">
+                <h1 style="font-size: 1.5rem;">Admin Dashboard</h1>
+            </div>
+            <button onclick="clearOrders()" class="btn-clear">Clear All Orders</button>
+        </div>
+    </header>
+
+    <main class="container">
+        <h2 style="margin-bottom: 2rem;">Incoming Orders</h2>
+        <div id="orders-list"></div>
+    </main>
+
+    <script>
+        function renderOrders() {
+            const list = document.getElementById('orders-list');
+            const orders = JSON.parse(localStorage.getItem('admin_orders') || '[]');
+
+            if(orders.length === 0) {
+                list.innerHTML = '<div class="no-orders"><i data-lucide="package-x" size="48"></i><p>No orders yet. They will appear here when customers purchase!</p></div>';
+                lucide.createIcons();
+                return;
+            }
+
+            list.innerHTML = orders.map(order => `
+                <div class="order-card">
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                            <span class="order-id">#${order.id}</span>
+                            <span class="order-tag">${order.type}</span>
+                        </div>
+                        <p class="order-detail"><strong>👤 Customer:</strong> ${order.name}</p>
+                        <p class="order-detail"><strong>📞 Phone:</strong> ${order.phone}</p>
+                        <p class="order-detail"><strong>🍰 Detail:</strong> ${order.size} - ${order.flavour}</p>
+                        <p class="order-detail"><strong>📅 Date:</strong> ${order.date}</p>
+                        <p class="order-detail" style="font-size: 0.75rem; color: #bbb;">Ordered on ${order.time}</p>
+                    </div>
+                    <div style="text-align: right;">
+                        <p style="font-size: 1.5rem; font-weight: 700; color: var(--secondary);">${order.total}</p>
+                        <button style="background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 10px; margin-top: 10px; cursor: pointer;" onclick="alert('Contacting customer: ${order.phone}...')">Mark Processed</button>
+                    </div>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function clearOrders() {
+            if(confirm('Are you sure you want to clear the entire order history?')) {
+                localStorage.removeItem('admin_orders');
+                renderOrders();
+            }
+        }
+
+        // Listen for new orders (for same browser demo)
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'admin_orders') renderOrders();
+        });
+
+        // Request browser notifications permission on load
+        if ("Notification" in window) {
+            Notification.requestPermission();
+        }
+
+        renderOrders();
+    </script>
+</body>
+</html>

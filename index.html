@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sweet Blast | Fresh & Delicious Cakes for Every Occasion</title>
+    <meta name="description" content="Sweet Blast - Premium online bakery specializing in custom cakes, cupcakes, and wedding treats. Fresh and delicious cakes delivered to your doorstep.">
+    
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="icon" type="image/png" href="images/logo.png">
+    <script src="assets/js/theme.js"></script>
+
+    <style>
+        #intro-screen {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 9999;
+            background: #000; /* Solid background to prevent overlap */
+            display: flex;
+            align-items: center; justify-content: center;
+            flex-direction: column;
+            transition: opacity 1s ease, visibility 1s ease;
+            overflow: hidden;
+        }
+        #intro-screen.fade-out { opacity: 0; visibility: hidden; }
+        #intro-video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 1; }
+        .intro-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 0%, transparent 50%, rgba(0, 0, 0, 0.6) 100%); }
+        .intro-content { position: relative; z-index: 2; width: 90%; display: flex; flex-direction: column; align-items: center; }
+        .intro-main-row { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; margin-bottom: 5rem; }
+        .intro-left-col { display: flex; flex-direction: column; align-items: flex-start; gap: 1rem; }
+        .intro-right-col { display: flex; flex-direction: column; align-items: flex-end; align-self: flex-end; padding-bottom: 2rem; gap: 1rem; }
+        .intro-logo { max-height: 110px; filter: drop-shadow(0 0 25px rgba(212,175,55,0.4)); animation: logoPulse 2s ease-in-out infinite; }
+        .intro-tagline { font-family: 'Dancing Script', cursive; font-size: 5rem; font-weight: 700; color: #fff; text-shadow: 0 4px 20px rgba(0,0,0,0.5); margin: 0; line-height: 1; }
+        .intro-sub-text { font-family: 'Outfit', sans-serif; font-size: 0.9rem; letter-spacing: 4px; text-transform: uppercase; color: rgba(255,255,255,0.85); }
+        @media (max-width: 600px) {
+            .intro-main-row { flex-direction: column; align-items: center; text-align: center; gap: 2rem; margin-bottom: 2rem; }
+            .intro-left-col, .intro-right-col { align-items: center; text-align: center; align-self: center; }
+            .intro-tagline { font-size: 3.5rem; }
+            .intro-logo { max-height: 80px; }
+            .intro-sub-text { font-size: 0.7rem; letter-spacing: 2px; }
+        }
+        @keyframes logoPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+
+        /* Hero Text Sequential Character Animation */
+        .hero-char {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: charFadeIn 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* For Hover */
+        }
+        @keyframes charFadeIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero-char:hover {
+            transform: scale(1.7) translateY(-20px) !important;
+            animation: hero-hover-wave 0.6s ease-in-out infinite alternate;
+            color: var(--accent) !important;
+            text-shadow: 0 10px 30px rgba(173, 20, 87, 0.4);
+            z-index: 100;
+        }
+        @keyframes hero-hover-wave {
+            from { transform: scale(1.7) translateY(-15px); }
+            to { transform: scale(1.7) translateY(-25px); }
+        }
+
+        /* --- Vertical One-by-One Category Showcase --- */
+        .category-vertical-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 120px;
+            max-width: 1200px;
+            margin: 80px auto;
+            padding: 0 40px;
+        }
+        .category-full-row {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            align-items: center;
+            gap: 60px;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .category-full-row:nth-child(even) {
+            grid-template-columns: 0.8fr 1.2fr;
+        }
+
+        .category-full-row:nth-child(even) .cat-text-side {
+            order: 1; /* Move text to the first position (Left) */
+        }
+
+        .category-full-row:nth-child(even) .cat-visual-side {
+            order: 2; /* Move image to the second position (Right) */
+        }
+        .cat-main-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1), filter 0.8s ease, opacity 0.2s ease;
+            z-index: 2;
+        }
+        .category-full-row:hover .cat-main-image { transform: scale(1.15) rotate(3deg); filter: drop-shadow(0 40px 80px rgba(173, 20, 87, 0.4)); }
+        .cat-text-side { padding: 0 40px; }
+        .cat-number { font-family: 'Outfit', sans-serif; font-size: 1.2rem; color: var(--primary); font-weight: 700; letter-spacing: 4px; margin-bottom: 1rem; opacity: 0.6; }
+        .cat-title-big {
+            font-size: 4.5rem;
+            color: var(--row-accent, var(--secondary));
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 2rem;
+            transition: color 0.6s ease, transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        @keyframes textPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .category-full-row:hover .cat-title-big { color: var(--row-accent); transform: translateX(20px); filter: drop-shadow(0 0 20px var(--row-accent)); opacity: 0.8; }
+        .cat-flavor-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            justify-content: flex-start;
+        }
+
+        .small-flavor-pill {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: var(--row-accent, var(--secondary));
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            z-index: 10;
+        }
+        .category-full-row:hover .small-flavor-pill { border-color: var(--row-accent); background: rgba(255, 255, 255, 0.1); }
+        .hero-bg-overlay {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.05); /* Extremely subtle neutral overlay */
+            z-index: 1;
+            pointer-events: none;
+        }
+        .cat-number { font-family: 'Outfit', sans-serif; font-size: 1.2rem; color: var(--row-accent); font-weight: 700; letter-spacing: 4px; margin-bottom: 1rem; opacity: 0.6; }
+
+        @media (max-width: 1024px) {
+            header .container { padding: 10px 20px; height: 60px; justify-content: space-between; }
+            .brand img { max-height: 40px; }
+            .header-icons { gap: 1rem; }
+            .nav-links { display: none; }
+
+            .hero-section { min-height: auto; padding-top: 100px; padding-bottom: 60px; overflow: hidden; }
+            .hero-grid { grid-template-columns: 1fr; text-align: center; gap: 30px; }
+            .hero-content { order: 2; width: 100%; display: flex; flex-direction: column; align-items: center; padding: 0 15px; }
+            .hero-image { order: 1; margin: 0 auto; width: 100%; display: flex; justify-content: center; }
+            .hero-image img { 
+                max-width: 280px; 
+                width: 80%;
+                transform: none; 
+            }
+            #hero-title { 
+                font-size: clamp(2rem, 10vw, 3rem) !important; 
+                line-height: 1.1; 
+                margin-bottom: 1.5rem; 
+                text-align: center; 
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 0.3rem 0.6rem;
+                width: 100%;
+            }
+            #hero-subtitle { font-size: 0.8rem; letter-spacing: 2px; padding-top: 10px; }
+            #hero-desc { font-size: 1rem; max-width: 100%; margin: 1rem 0; opacity: 0.85; line-height: 1.6; padding: 0 10px; }
+
+            .category-vertical-stack { gap: 80px; padding: 0 15px; margin: 40px auto; }
+            .category-full-row, .category-full-row:nth-child(even) { 
+                grid-template-columns: 1fr; 
+                text-align: center; 
+                gap: 20px;
+                padding-bottom: 20px; 
+            }
+            .cat-title-big { font-size: 3rem; margin-bottom: 1rem; line-height: 1.1; }
+            .cat-visual-side { 
+                height: 300px; 
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin-top: 0;
+            }
+            .cat-main-image {
+                max-height: 100%;
+                width: auto;
+                object-fit: contain;
+            }
+            .cat-text-side { 
+                order: 2; 
+                padding: 0; 
+            }
+            .cat-flavor-preview {
+                justify-content: center;
+                gap: 0.8rem;
+            }
+            .small-flavor-pill {
+                font-size: 0.8rem;
+                padding: 6px 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .cat-title-big { font-size: 2.2rem; }
+            .cat-visual-side { height: 240px; }
+            .intro-tagline { font-size: 2.8rem; }
+            .intro-logo { max-height: 70px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Intro Splash Screen -->
+    <div id="intro-screen">
+        <video id="intro-video" autoplay muted playsinline><source src="Cakes.mp4" type="video/mp4"></video>
+        <div class="intro-overlay"></div>
+        <div class="intro-content">
+            <div class="intro-main-row">
+                <div class="intro-left-col"><img src="images/logo.png" alt="Sweet Blast" class="intro-logo"><div class="intro-tagline">Sweet<br>Blast</div></div>
+                <div class="intro-right-col"><div class="intro-sub-text">Baked with Love</div><div class="intro-sub-text">Fresh Every Day</div><button class="intro-skip" id="intro-skip-btn" style="margin-top: 1rem;">Skip Intro ›</button></div>
+            </div>
+        </div>
+        <div class="intro-progress" id="intro-progress"></div>
+    </div>
+
+    <!-- Header & Navigation -->
+    <header>
+        <div class="container">
+            <a href="index.html" class="brand"><img src="images/logo.png" alt="Sweet Blast" class="logo-img"></a>
+            <nav>
+                <ul class="nav-links"><li><a href="index.html">Home</a></li><li><a href="photo-cake.html">Photo Cake</a></li><li><a href="collection.html">Collection</a></li><li><a href="contact.html">Contact</a></li></ul>
+            </nav>
+            <div class="header-icons">
+                <a href="#"><i data-lucide="search"></i></a>
+                <a href="cart.html" class="cart-icon"><i data-lucide="shopping-bag"></i><span class="cart-count">0</span></a>
+                <a href="#"><i data-lucide="user"></i></a>
+                <button class="mobile-menu-trigger" id="mobile-menu-open"><i data-lucide="menu"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobile-menu">
+        <button class="mobile-menu-close" id="mobile-menu-close"><i data-lucide="x" size="32"></i></button>
+        <nav class="mobile-nav-links">
+            <a href="index.html">Home</a>
+            <a href="photo-cake.html">Photo Cake</a>
+            <a href="collection.html">Collection</a>
+            <a href="contact.html">Contact</a>
+        </nav>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero-section" id="home">
+        <video id="hero-video-bg" autoplay muted loop playsinline style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; opacity: 0; transition: opacity 1s ease-in-out;"></video>
+        <div class="hero-bg-overlay"></div>
+        <div class="container hero-grid">
+            <div class="hero-content">
+                <div class="reveal-item">
+                    <span id="hero-subtitle" style="text-transform: uppercase; letter-spacing: 2px; color: var(--primary); font-weight: 700; margin-bottom: 1rem; display: block;">Exceptional Quality</span>
+                    <h1 id="hero-title" style="white-space: nowrap; color: var(--primary);">Sweet Blast Menu</h1>
+                </div>
+                <p id="hero-desc" style="transition: opacity 0.5s ease; min-height: 80px;">Discover our wide variety of treats across all categories. Handcrafted with love.</p>
+                <div style="display: flex; gap: 1.5rem; align-items: center; justify-content: center; flex-wrap: wrap;">
+                    <a id="hero-btn" href="shop.html" class="btn" style="transition: all 0.5s ease;">Explore Menu</a>
+                    <a id="hero-contact" href="contact.html" style="font-weight: 700; color: var(--secondary); display: flex; align-items: center; gap: 8px; border-bottom: 2px solid var(--primary); transition: all 0.5s ease;">Contact Us <i data-lucide="arrow-right" size="18"></i></a>
+                </div>
+            </div>
+            <div class="hero-image" style="position: relative;">
+                <img src="images/hero_cake.png" id="heroImage" alt="Premium Cake" style="transition: opacity 0.5s ease, transform 0.8s ease;">
+                <div id="hero-price-badge" style="position: absolute; bottom: 20px; right: 20px; background: var(--accent); color: white; padding: 10px 20px; border-radius: 30px; font-weight: 700; font-size: 1.2rem; display: none; transition: opacity 0.5s ease; box-shadow: var(--soft-shadow);"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Vertical Large Showcase Categories -->
+    <section class="section">
+        <div class="container">
+            <div class="section-title"><h2>Browse by Category</h2><p>One by one. Each a masterpiece. Each a different dream.</p></div>
+            <div class="category-vertical-stack" id="category-track">
+                <!-- Dynamically Loaded Vertical Rows -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Offers Section -->
+    <section class="section" style="border-top: 1px solid var(--glass-border); border-bottom: 1px solid var(--glass-border); padding: 50px 0;">
+        <div class="container" style="display: flex; justify-content: space-around; flex-wrap: wrap; text-align: center; gap: 2rem;">
+            <div><i data-lucide="truck" style="color: var(--accent); margin-bottom: 1rem;"></i><h3 style="color: var(--accent);">Free Delivery</h3><p>On orders above ₹500</p></div>
+            <div><i data-lucide="star" style="color: var(--accent); margin-bottom: 1rem;"></i><h3 style="color: var(--accent);">Freshly Baked</h3><p>Baked daily with love</p></div>
+            <div><i data-lucide="heart" style="color: var(--accent); margin-bottom: 1rem;"></i><h3 style="color: var(--accent);">Pure Ingredients</h3><p>No artificial preservatives</p></div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container footer-grid">
+            <div class="footer-logo"><img src="images/logo.png" alt="Sweet Blast" class="footer-logo-img"><p style="color: rgba(255, 255, 255, 0.85);">Making your celebrations sweeter since 2010. Handcrafted, fresh, and premium cakes delivered right to your door.</p></div>
+            <div><h4 class="footer-title">Quick Links</h4><ul class="footer-links"><li><a href="index.html">Home</a></li><li><a href="shop.html">Shop</a></li><li><a href="contact.html">Contact Us</a></li></ul></div>
+            <div><h4 class="footer-title">Contact</h4><ul class="footer-links"><li><i data-lucide="map-pin" size="16"></i> Sweet City Boutique</li><li><i data-lucide="phone" size="16"></i> +91 98765 43210</li><li><i data-lucide="mail" size="16"></i> hello@sweetblast.com</li></ul></div>
+        </div>
+        <div class="container copyright"><p>&copy; 2026 Sweet Blast Bakery. All fresh and baked with love.</p></div>
+    </footer>
+
+    <script type="module">
+        import products from './assets/js/products.js';
+
+        lucide.createIcons();
+
+        // Mobile Menu Logic
+        const menuOpen = document.getElementById('mobile-menu-open');
+        const menuClose = document.getElementById('mobile-menu-close');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        if (menuOpen && menuClose && mobileMenu) {
+            menuOpen.addEventListener('click', () => mobileMenu.classList.add('active'));
+            menuClose.addEventListener('click', () => mobileMenu.classList.remove('active'));
+            // Close menu on link click
+            mobileMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => mobileMenu.classList.remove('active'));
+            });
+        }
+
+        // Intro
+        (function() {
+            const intro = document.getElementById('intro-screen');
+            const video = document.getElementById('intro-video');
+            const progress = document.getElementById('intro-progress');
+            document.body.style.overflow = 'hidden';
+            function dismissIntro() { intro.classList.add('fade-out'); document.body.style.overflow = ''; setTimeout(() => intro.remove(), 1100); }
+            video.addEventListener('loadedmetadata', () => { progress.style.transition = `width ${video.duration}s linear`; progress.style.width = '100%'; });
+            video.addEventListener('ended', dismissIntro);
+            document.getElementById('intro-skip-btn').addEventListener('click', dismissIntro);
+            setTimeout(dismissIntro, 8000);
+        })();
+
+        // Hero Slider
+        if (products && products.length > 0) {
+            const sliderCats = [...new Set(products.map(p => p.category.trim()))].filter(c => !['Bakery Products', 'Biscuits', 'Dietary Specific', 'Gift Combos', 'Photo Cakes', 'Photo Cake', 'Occasion Cakes'].includes(c));
+            const slides = sliderCats.map(cat => products.find(p => p.category === cat)).slice(0, 10);
+            let currentSlide = 0;
+            const heroSubtitle = document.getElementById('hero-subtitle');
+            const heroTitle = document.getElementById('hero-title');
+            const heroDesc = document.getElementById('hero-desc');
+            const heroImage = document.getElementById('heroImage');
+            const heroBtn = document.getElementById('hero-btn');
+            const heroVideoBg = document.getElementById('hero-video-bg');
+
+            // Build a map: category -> list of unique subfolder dirs from all products
+            const buildCategoryDirs = () => {
+                const map = {};
+                products.forEach(pr => {
+                    if (!pr.image) return;
+                    const dir = pr.image.substring(0, pr.image.lastIndexOf('/'));
+                    if (!map[pr.category]) map[pr.category] = [];
+                    if (!map[pr.category].includes(dir)) map[pr.category].push(dir);
+                });
+                return map;
+            };
+            const categoryDirs = buildCategoryDirs();
+
+            const tryLoadVideo = async (dirs, catName, idx = 0) => {
+                if (idx >= dirs.length) {
+                    heroVideoBg.style.opacity = '0';
+                    return;
+                }
+                const videoSrc = `${dirs[idx]}/${catName}.mp4`;
+                try {
+                    const res = await fetch(videoSrc, { method: 'HEAD' });
+                    if (res.ok) {
+                        heroVideoBg.src = videoSrc;
+                        heroVideoBg.load();
+                        heroVideoBg.play().catch(() => {});
+                        heroVideoBg.style.opacity = '1';
+                    } else {
+                        tryLoadVideo(dirs, catName, idx + 1);
+                    }
+                } catch(e) {
+                    tryLoadVideo(dirs, catName, idx + 1);
+                }
+            };
+
+            const setVideoSource = (p) => {
+                if (!heroVideoBg) return;
+                heroVideoBg.style.opacity = '0';
+                const dirs = categoryDirs[p.category] || [];
+                setTimeout(() => tryLoadVideo(dirs, p.category), 600);
+            };
+
+            // Set initial video
+            if (slides.length > 0) setVideoSource(slides[0]);
+
+            setInterval(() => {
+                currentSlide = (currentSlide + 1) % slides.length;
+                const p = slides[currentSlide];
+
+                // Reset Opacity for whole groups if needed, but the chars have their own animation
+                heroSubtitle.style.opacity = '0';
+                heroDesc.style.opacity = '0';
+                heroImage.style.opacity = '0';
+                
+                let themeColor = 'var(--accent)';
+                let isRainbow = false;
+                const name = p.name.toLowerCase();
+                const cat = p.category.toLowerCase();
+                
+                if (cat.includes('cupcake') || name.includes('rainbow')) isRainbow = true;
+                else if (p.category === 'Menu' || p.name.includes('Sweet Blast Menu')) themeColor = '#FFF8E1'; 
+                else if (name.includes('rose') || name.includes('lace') || name.includes('floral') || name.includes('pearl')) themeColor = '#F48FB1'; // Soft Pink
+                else if (name.includes('chocolate') || name.includes('dark') || name.includes('truffle') || name.includes('pull') || name.includes('lava')) themeColor = '#8D6E63'; // Rich Chocolate
+                else if (name.includes('blue') || name.includes('cloud') || name.includes('prince') || cat.includes('baby')) themeColor = '#42a5f5'; // Vibrant Blue
+                else if (name.includes('pink') || name.includes('berry') || name.includes('strawberry') || name.includes('fruit')) themeColor = '#ec407a'; // Berry Pink
+                else if (name.includes('superhero') || name.includes('red velvet') || name.includes('heart')) themeColor = '#c62828'; // Red
+                else if (name.includes('jungle') || name.includes('safari') || name.includes('pistachio')) themeColor = '#2e7d32'; // Green
+                else if (name.includes('space') || name.includes('rocket')) themeColor = '#3949ab'; // Space Indigo
+                else if (cat.includes('wedding') || name.includes('wedding')) themeColor = '#9c7a10'; // Royal Gold
+                else if (cat.includes('cheesecake') || cat.includes('lemon') || name.includes('lemon') || name.includes('pineapple') || name.includes('mango') || name.includes('gold')) themeColor = '#fbc02d'; // Yellow
+                else if (cat.includes('birthday') || name.includes('birthday')) themeColor = '#D2AC67'; // Celebration Gold
+
+                setTimeout(() => {
+                    heroSubtitle.innerText = "EXCEPTIONAL QUALITY";
+                    
+                    heroTitle.style.color = isRainbow ? 'initial' : themeColor;
+                    heroSubtitle.style.color = isRainbow ? '#ff4081' : themeColor;
+
+                    // Word-Aware Injection to prevent letter-splitting on mobile
+                    const displayTitle = (p.category === 'Menu') ? p.name : p.category;
+                    const words = displayTitle.split(' ');
+                    let globalCharIdx = 0;
+                    
+                    const rainbowColors = ['#ff0000', '#ff8c00', '#ffd700', '#32cd32', '#1e90ff', '#4b0082', '#9400d3'];
+                    
+                    const chosenFont = 'Urbanist';
+                    
+                    heroTitle.innerHTML = words.map((word) => {
+                        const wordHtml = word.split('').map((char) => {
+                            const charColor = isRainbow ? rainbowColors[globalCharIdx % rainbowColors.length] : themeColor;
+                            const shadow = isRainbow ? `0 0 15px ${charColor}44` : '0 0 10px rgba(255,255,255,0.2)';
+                            const delay = globalCharIdx * 0.05;
+                            globalCharIdx++;
+                            return `<span class="hero-char" style="animation-delay: ${delay}s; color: ${charColor}; text-shadow: ${shadow}; font-family: '${chosenFont}';">${char}</span>`;
+                        }).join('');
+                        
+                        // Increment global idx for the space between words
+                        globalCharIdx++; 
+                        
+                        return `<span style="white-space: nowrap; display: inline-block;">${wordHtml}</span>`;
+                    }).join(' ');
+
+                    heroDesc.innerText = p.description;
+                    heroImage.src = p.image;
+                    setVideoSource(p);
+                    
+                    heroSubtitle.style.opacity = '1';
+                    heroDesc.style.opacity = '1';
+                    heroImage.style.opacity = '1';
+                }, 500);
+            }, 5000);
+        }
+
+        // Vertical Showcase
+        const catTrack = document.getElementById('category-track');
+        if (catTrack && products.length > 0) {
+            const excludeList = ['Photo Cakes', 'Photo Cake', 'Gift Combos', 'Bakery Products', 'Biscuits', 'Occasion Cakes'];
+            let labels = [...new Set(products.map(p => p.category.trim()))].filter(c => !excludeList.includes(c));
+            
+            // Swap logic to organize category order as requested
+            if (labels.length >= 7) {
+                // Swap 06 (index 5) and 07 (index 6) - Making Trending Cakes #06
+                const temp67 = labels[5];
+                labels[5] = labels[6];
+                labels[6] = temp67;
+            }
+            if (labels.length >= 9) {
+                // Swap 08 (index 7) and 09 (index 8) - Making Cheesecakes #08
+                const temp89 = labels[7];
+                labels[7] = labels[8];
+                labels[8] = temp89;
+            }
+
+            labels.forEach((catName, idx) => {
+                const categoryProducts = products.filter(p => p.category === catName);
+                if (categoryProducts.length === 0) return;
+                
+                const p = categoryProducts[0];
+                let themeColor = '#D2AC67'; // Default Warm Gold
+                const name = p.name.toLowerCase();
+                const cat = p.category.toLowerCase();
+                const desc = p.description.toLowerCase();
+                
+                if (cat.includes('cupcake') || name.includes('rainbow')) {
+                    themeColor = '#ff4081'; 
+                } else if (cat.includes('cheesecake')) {
+                    themeColor = '#B39DDB'; // Soft Lavender for Cheesecake
+                } else if (cat.includes('dietary')) {
+                    themeColor = '#4DB6AC'; // Healthy Teal for Dietary
+                } else if (cat.includes('kids')) {
+                    themeColor = '#FF8A65'; // Fun Orange for Kids
+                } else if (name.includes('blue') || cat.includes('baby') || desc.includes('blue')) {
+                    themeColor = '#42a5f5'; // Vibrant Blue
+                } else if (name.includes('pink') || name.includes('strawberry') || name.includes('berry') || desc.includes('strawberry')) {
+                    themeColor = '#ec407a'; // Berry Pink
+                } else if (name.includes('red') || name.includes('velvet') || desc.includes('velvet')) {
+                    themeColor = '#c62828'; // Deep Red
+                } else if (name.includes('chocolate') || name.includes('dark') || desc.includes('chocolate') || name.includes('truffle')) {
+                    themeColor = '#8D6E63'; // Rich Chocolate Brown
+                } else if (name.includes('gold') || name.includes('yellow') || name.includes('pineapple') || name.includes('lemon') || cat.includes('wedding')) {
+                    themeColor = '#fbc02d'; // Golden Yellow
+                } else if (name.includes('jungle') || name.includes('safari') || name.includes('pistachio')) {
+                    themeColor = '#2e7d32'; // Fresh Green
+                } else if (cat.includes('birthday')) {
+                    themeColor = '#D2AC67'; // Celebration Gold
+                } else if (cat.includes('wedding') || cat.includes('designer')) {
+                    themeColor = '#9c7a10'; // Royal Gold
+                }
+                
+                const row = document.createElement('div');
+                row.className = 'category-full-row';
+                row.style.setProperty('--row-accent', themeColor);
+                const rainbowColors = ['#ff0000', '#ff8c00', '#ffd700', '#32cd32', '#1e90ff', '#4b0082', '#9400d3'];
+                const isVerticalRainbow = false;
+                const catTitleHTML = catName.split('').map((char, index) => {
+                    const charColor = isVerticalRainbow ? rainbowColors[index % rainbowColors.length] : 'inherit';
+                    const shadow = isVerticalRainbow ? `0 0 15px ${charColor}44` : 'none';
+                    return `<span style="color: ${charColor}; text-shadow: ${shadow}">${char === ' ' ? '&nbsp;' : char}</span>`;
+                }).join('');
+
+                const chosenCatFont = 'Urbanist';
+                const chosenNumFont = 'Montserrat';
+
+                const pillTextColor = window.getContrastColor(themeColor);
+
+                row.innerHTML = `
+                    <div class="cat-visual-side">
+                        <img src="${encodeURI(categoryProducts[0].image)}" alt="${catName}" class="cat-main-image">
+                    </div>
+                    <div class="cat-text-side">
+                        <div class="cat-number" style="font-family: '${chosenNumFont}'; color: var(--text); opacity: 0.4;">0${idx + 1}</div>
+                        <h2 class="cat-title-big" style="font-family: '${chosenCatFont}';">${catTitleHTML}</h2>
+                        <div class="cat-flavor-preview">
+                                ${categoryProducts.slice(0, 3).map(p => `
+                                    <span class="small-flavor-pill" 
+                                          style="font-family: 'Comfortaa'; font-weight: bold; background: ${themeColor}; color: ${pillTextColor};"
+                                          onclick="event.stopPropagation(); window.location.href='product.html?id=${p.id}'">
+                                        ${p.name}
+                                    </span>`).join('')}
+                        </div>
+                    </div>
+                `;
+                row.onclick = () => { window.location.href = `shop.html?cat=${encodeURIComponent(catName)}`; };
+                catTrack.appendChild(row);
+
+                const mainImg = row.querySelector('.cat-main-image');
+                let flickerInterval = null;
+                let currentFlickerIdx = 0;
+
+                const startFlicker = () => {
+                    if (flickerInterval) return;
+                    if (categoryProducts.length <= 1) return;
+                    flickerInterval = setInterval(() => {
+                        currentFlickerIdx = (currentFlickerIdx + 1) % categoryProducts.length;
+                        mainImg.style.opacity = '0.4';
+                        setTimeout(() => {
+                            mainImg.src = encodeURI(categoryProducts[currentFlickerIdx].image);
+                            mainImg.style.opacity = '1';
+                        }, 250);
+                    }, 1200);
+                };
+
+                const stopFlicker = () => {
+                    clearInterval(flickerInterval);
+                    flickerInterval = null;
+                    mainImg.style.opacity = '0.4';
+                    setTimeout(() => {
+                        mainImg.src = encodeURI(categoryProducts[0].image);
+                        mainImg.style.opacity = '1';
+                    }, 250);
+                };
+
+                row.addEventListener('mouseenter', startFlicker);
+                row.addEventListener('mouseleave', stopFlicker);
+
+                const observerOptions = { threshold: 0.3 };
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            if (window.innerWidth < 1024) {
+                                startFlicker();
+                            }
+                        } else {
+                            if (window.innerWidth < 1024) {
+                                stopFlicker();
+                            }
+                        }
+                    });
+                }, observerOptions);
+                observer.observe(row);
+            });
+        }
+    </script>
+</body>
+</html>

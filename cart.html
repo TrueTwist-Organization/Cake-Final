@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart | Sweet Blast</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .cart-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 4rem;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            padding: 2.5rem;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            margin-bottom: 1.5rem;
+            transition: 0.3s;
+            box-shadow: 0 10px 30px rgba(197, 160, 89, 0.05);
+        }
+
+        .cart-item-img {
+            width: 100px;
+            height: 100px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-info h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .cart-item-info small {
+            display: block;
+            color: var(--text);
+            opacity: 0.6;
+            margin-bottom: 0.3rem;
+        }
+
+        .price-col {
+            text-align: right;
+            font-weight: bold;
+        }
+
+        .remove-btn {
+            background: none;
+            border: none;
+            color: #ff6b6b;
+            cursor: pointer;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .summary-card {
+            background: var(--glass);
+            backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            padding: 2.5rem;
+            border-radius: 40px;
+            position: sticky;
+            top: 100px;
+            box-shadow: 0 20px 50px rgba(197, 160, 89, 0.1);
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .total-row {
+            padding-top: 1.5rem;
+            margin-top: 1.5rem;
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            .cart-grid { grid-template-columns: 1fr; gap: 2rem; }
+            .cart-item { 
+                padding: 1.5rem; 
+                flex-direction: column; 
+                text-align: center; 
+                background: white;
+            }
+            .cart-item-img { width: 120px; height: 120px; }
+            .price-col { text-align: center; margin-top: 1rem; border-top: 1px solid #eee; width: 100%; padding-top: 1rem; }
+            .summary-card { position: static; padding: 1.5rem; }
+            .total-row { font-size: 1.4rem; }
+        }
+    </style>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="images/logo.png">
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <a href="index.html" class="brand"><img src="images/logo.png" alt="Sweet Blast" class="logo-img"></a>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="photo-cake.html">Photo Cake</a></li>
+                    <li><a href="collection.html">Collection</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="header-icons">
+                <a href="cart.html" class="cart-icon">
+                    <i data-lucide="shopping-bag"></i>
+                    <span class="cart-count">0</span>
+                </a>
+                <button class="mobile-menu-trigger" id="mobile-menu-open"><i data-lucide="menu"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobile-menu">
+        <button class="mobile-menu-close" id="mobile-menu-close"><i data-lucide="x" size="32"></i></button>
+        <nav class="mobile-nav-links">
+            <a href="index.html">Home</a>
+            <a href="photo-cake.html">Photo Cake</a>
+            <a href="collection.html">Collection</a>
+            <a href="contact.html">Contact</a>
+        </nav>
+    </div>
+
+    <section class="section">
+        <div class="container">
+            <h1 style="margin-bottom: 3rem; color: var(--primary);">Your Shopping Cart</h1>
+            
+            <div id="empty-cart" style="display: none; text-align: center; padding: 50px;">
+                <i data-lucide="shopping-cart" size="50" style="opacity: 0.3; margin-bottom: 1rem;"></i>
+                <h2>Your cart is empty</h2>
+                <p>Looks like you haven't added anything yet. Explore our delicious cakes!</p>
+                <a href="shop.html" class="btn" style="margin-top: 2rem;">Shop Now</a>
+            </div>
+
+            <div class="cart-grid" id="cart-content">
+                <div id="cart-items-list">
+                    <!-- Items rendered here -->
+                </div>
+
+                <div class="summary-card">
+                    <h2 style="margin-bottom: 2rem;">Order Summary</h2>
+                    <div class="summary-row"><span>Subtotal</span> <span id="subtotal">₹0.00</span></div>
+                    <div class="summary-row"><span>Delivery</span> <span>₹49</span></div>
+                    <div class="summary-row"><span>GST (5%)</span> <span id="tax">₹0.00</span></div>
+                    <div class="total-row summary-row">
+                        <span>Total</span>
+                        <span id="grand-total">$0.00</span>
+                    </div>
+                    <a href="checkout.html" class="btn" style="width: 100%; text-align: center; margin-top: 2rem;">Proceed to Checkout</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer style="margin-top: 100px;">
+        <div class="container copyright">
+            <p>&copy; 2026 Sweet Blast Bakery. All fresh and baked with love.</p>
+        </div>
+    </footer>
+
+    <script type="module">
+        // Mobile Menu Logic
+        const menuOpen = document.getElementById('mobile-menu-open');
+        const menuClose = document.getElementById('mobile-menu-close');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        if (menuOpen && menuClose && mobileMenu) {
+            menuOpen.addEventListener('click', () => mobileMenu.classList.add('active'));
+            menuClose.addEventListener('click', () => mobileMenu.classList.remove('active'));
+            mobileMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => mobileMenu.classList.remove('active'));
+            });
+        }
+
+        function renderCart() {
+            const cartItemsList = document.getElementById('cart-items-list');
+            const cartContent = document.getElementById('cart-content');
+            const emptyCart = document.getElementById('empty-cart');
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            
+            if (cart.length === 0) {
+                cartContent.style.display = 'none';
+                emptyCart.style.display = 'block';
+                return;
+            }
+
+            cartItemsList.innerHTML = '';
+            let subtotal = 0;
+
+            cart.forEach((item, index) => {
+                const itemTotal = item.price * item.quantity;
+                subtotal += itemTotal;
+
+                const div = document.createElement('div');
+                div.className = 'cart-item animate';
+                div.innerHTML = `
+                    <img src="${item.image}" alt="${item.name}" class="cart-item-img">
+                    <div class="cart-item-info">
+                        <h3>${item.name}</h3>
+                        <small>Flavour: ${item.selectedFlavor}</small>
+                        <small>Size: ${item.selectedSize}</small>
+                        <small>Qty: ${item.quantity}</small>
+                        <button class="remove-btn" onclick="removeFromCart(${item.cartId})">Remove</button>
+                    </div>
+                    <div class="price-col">
+                        ₹${itemTotal}
+                    </div>
+                `;
+                cartItemsList.appendChild(div);
+            });
+
+            const gst = subtotal * 0.05;
+            const delivery = 49;
+            const grandTotal = subtotal + gst + delivery;
+
+            document.getElementById('subtotal').innerText = `₹${subtotal}`;
+            document.getElementById('tax').innerText = `₹${gst.toFixed(0)}`;
+            document.getElementById('grand-total').innerText = `₹${grandTotal.toFixed(0)}`;
+            
+            document.querySelector('.cart-count').innerText = cart.length;
+            lucide.createIcons();
+        }
+
+        window.removeFromCart = (cartId) => {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            cart = cart.filter(item => item.cartId !== cartId);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            renderCart();
+        };
+
+        renderCart();
+        lucide.createIcons();
+    </script>
+</body>
+</html>
