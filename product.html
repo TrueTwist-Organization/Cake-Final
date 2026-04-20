@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details | Sweet Blast</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            background: var(--bg, #6B0016) !important;
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+        }
+
+        .product-page-overlay {
+            background: transparent;
+            width: 100%;
+            min-height: 100vh;
+            padding-top: 80px;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+        }
+        header { 
+            position: fixed;
+            top: 0; width: 100%; z-index: 1000;
+            background: rgba(var(--bg-rgb), 0.2);
+            backdrop-filter: blur(10px);
+        }
+        .product-detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            padding-top: 2rem;
+            align-items: flex-start;
+        }
+        
+        .section {
+            padding: 40px 0 !important;
+        }
+
+        .main-img {
+            width: 100%;
+            max-height: 500px;
+            object-fit: contain;
+            border-radius: 30px;
+            transition: transform 0.5s ease, opacity 0.15s ease;
+        }
+
+        .product-visuals {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 1.5rem;
+        }
+
+
+
+
+        .product-meta {
+            padding: 2rem 0;
+            border: none;
+        }
+
+        .product-meta h1 {
+            font-size: 3rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+            overflow-wrap: break-word;
+            word-break: break-word;
+        }
+
+        .product-meta .description {
+            margin: 1.5rem 0;
+            line-height: 1.8;
+            opacity: 0.9;
+            color: var(--text);
+            overflow-wrap: break-word;
+        }
+
+        .selection-group {
+            margin: 2rem 0;
+        }
+
+        .selection-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+            color: var(--accent);
+        }
+
+        .flavor-btns {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+
+        .small-btn {
+            padding: 0.6rem 1.5rem;
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--text);
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .small-btn.active {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: var(--primary-text);
+        }
+
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin: 2.5rem 0;
+        }
+
+        .qty-box {
+            display: flex;
+            align-items: center;
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .qty-box button {
+            border: none;
+            background: var(--primary);
+            color: var(--primary-text);
+            padding: 10px 18px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        
+        .qty-box button:hover { opacity: 0.8; }
+
+        .qty-box input {
+            width: 70px;
+            text-align: center;
+            border: none;
+            background: transparent;
+            color: var(--text) !important;
+            font-weight: 700;
+            font-size: 1.1rem;
+            outline: none;
+        }
+
+        .size-btns {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.2rem;
+            perspective: 1000px;
+        }
+
+        .size-btn {
+            padding: 1rem 1.8rem;
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            min-width: 90px;
+        }
+
+        .size-btn .emoji {
+            font-size: 1.8rem;
+            transition: transform 0.5s;
+        }
+
+        .size-btn span { font-weight: 700; font-size: 0.85rem; }
+
+        .size-btns.has-selection .size-btn:not(.active) {
+            transform: scale(0.85) rotateX(15deg);
+            opacity: 0.4;
+            filter: grayscale(0.8);
+        }
+
+        .size-btn.active {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: var(--primary-text);
+            transform: scale(1.15) translateZ(10px);
+            box-shadow: 0 20px 40px rgba(212, 175, 55, 0.3);
+            z-index: 10;
+        }
+
+        .size-btn.active .emoji { transform: scale(1.2) translateY(-5px); }
+
+        .size-btn:hover:not(.active) { transform: translateY(-5px); background: rgba(255, 255, 255, 0.4); }
+
+        /* Topping Wheel */
+        .topping-wheel {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 2rem auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .topping-center {
+            z-index: 5;
+            text-align: center;
+            font-family: 'Dancing Script', cursive;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.9), 0 2px 8px rgba(0,0,0,0.5);
+        }
+        .topping-orbit {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            animation: rotateWheel 25s linear infinite;
+        }
+        .topping-item {
+            position: absolute;
+            width: 75px;
+            height: 75px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.3));
+            animation: counterRotate 25s linear infinite;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+        }
+        .topping-item:hover { transform: scale(1.3) rotate(15deg) !important; filter: drop-shadow(0 20px 30px rgba(0,0,0,0.4)); }
+
+        @keyframes rotateWheel { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes counterRotate { from { transform: rotate(0deg); } to { transform: rotate(-360deg); } }
+        .t1 { top: -37.5px; left: 50%; margin-left: -37.5px; }
+        .t2 { top: 50%; right: -37.5px; margin-top: -37.5px; }
+        .t3 { bottom: -37.5px; left: 50%; margin-left: -37.5px; }
+        .t4 { top: 50%; left: -37.5px; margin-top: -37.5px; }
+
+        .zoom-char {
+            display: inline-block;
+            font-weight: 700;
+            letter-spacing: 1px;
+            animation: text-pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes text-pop { 0% { transform: scale(1.5); opacity: 0; filter: blur(3px); } 100% { transform: scale(1); opacity: 1; filter: blur(0); } }
+        .zoom-char:hover { transform: scale(1.8) translateY(-15px) !important; color: var(--accent) !important; text-shadow: 0 15px 40px rgba(233, 30, 99, 0.6); z-index: 100; }
+
+        .back-nav {
+            position: absolute;
+            top: 100px;
+            left: var(--container-padding, 2rem);
+            z-index: 100;
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--text);
+            padding: 8px 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: var(--primary);
+            color: var(--primary-text);
+            transform: translateX(-5px);
+            border-color: var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            .back-nav {
+                top: 80px;
+                left: 1rem;
+            }
+            .product-detail-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                padding-top: 1rem;
+            }
+            .product-meta h1 {
+                font-size: 2.2rem;
+            }
+            .product-page-overlay {
+                padding-top: 70px;
+            }
+            .main-img {
+                max-height: 400px;
+            }
+            .section {
+                padding: 20px 0 !important;
+            }
+            .selection-group {
+                margin: 1.5rem 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .product-meta h1 {
+                font-size: 1.8rem;
+            }
+            .product-meta {
+                padding: 1rem 0;
+            }
+            .size-btns {
+                gap: 0.8rem;
+                justify-content: center;
+            }
+            .size-btn {
+                padding: 0.8rem 1rem;
+                min-width: 80px;
+            }
+            .flavor-btns {
+                justify-content: center;
+            }
+            .quantity-control {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+            .qty-box {
+                justify-content: center;
+            }
+            .back-nav {
+                top: 70px;
+            }
+        }
+    </style>
+    <link rel="icon" type="image/png" href="images/logo.png">
+    <script src="assets/js/theme.js"></script>
+</head>
+<body>
+    <video id="bgFlavorVideo" loop muted playsinline style="position: fixed; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index:-2; opacity:0; transition: opacity 1.2s ease; pointer-events:none;"></video>
+    <div id="bgVideoMask" style="position: fixed; top:0; left:0; width:100%; height:100%; background: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.1) 100%); z-index: -1; pointer-events: none;"></div>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <a href="index.html" class="brand"><img src="images/logo.png" alt="Sweet Blast" class="logo-img"></a>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="photo-cake.html">Photo Cake</a></li>
+                    <li><a href="collection.html">Collection</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="header-icons">
+                <a href="#"><i data-lucide="search"></i></a>
+                <a href="cart.html" class="cart-icon"><i data-lucide="shopping-bag"></i><span class="cart-count">0</span></a>
+                <a href="#"><i data-lucide="user"></i></a>
+                <button class="mobile-menu-trigger" id="mobile-menu-open"><i data-lucide="menu"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobile-menu">
+        <button class="mobile-menu-close" id="mobile-menu-close"><i data-lucide="x" size="32"></i></button>
+        <nav class="mobile-nav-links">
+            <a href="index.html">Home</a>
+            <a href="photo-cake.html">Photo Cake</a>
+            <a href="collection.html">Collection</a>
+            <a href="contact.html">Contact</a>
+        </nav>
+    </div>
+
+    <div class="product-page-overlay">
+        <div class="container back-nav">
+            <a href="javascript:history.back()" class="back-btn">
+                <i data-lucide="arrow-left" size="18"></i>
+                Back
+            </a>
+        </div>
+        <section class="section">
+            <div class="container" id="product-detail-container">
+                <!-- Dynamically Loaded -->
+            </div>
+        </section>
+
+        <!-- Notification -->
+        <div class="notification" id="notification"><span id="notif-text">Added!</span></div>
+
+        <footer>
+            <div class="container footer-grid">
+            <div class="footer-logo">
+                <img src="images/logo.png" alt="Sweet Blast" class="footer-logo-img">
+                <p style="color: rgba(255, 255, 255, 0.85);">Making your celebrations sweeter since 2010.</p>
+                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                    <!-- Social icons... -->
+                </div>
+            </div>
+            <div><h4 class="footer-title">Quick Links</h4><ul class="footer-links"><li><a href="index.html">Home</a></li><li><a href="shop.html">Shop</a></li><li><a href="contact.html">Contact Us</a></li></ul></div>
+            <div><h4 class="footer-title">Contact Us</h4><ul class="footer-links"><li><i data-lucide="map-pin" size="16"></i> 123 Baker St, Sweet City</li><li><i data-lucide="phone" size="16"></i> +1 234 567 890</li><li><i data-lucide="mail" size="16"></i> hello@sweetblast.com</li></ul></div>
+        </div>
+        <div class="container copyright"><p>&copy; 2026 Sweet Blast Bakery. All fresh and baked with love.</p></div>
+    </footer>
+    </div>
+
+    <script type="module">
+        import products from './assets/js/products.js';
+
+        // Mobile Menu Logic
+        const menuOpen = document.getElementById('mobile-menu-open');
+        const menuClose = document.getElementById('mobile-menu-close');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        if (menuOpen && menuClose && mobileMenu) {
+            menuOpen.addEventListener('click', () => mobileMenu.classList.add('active'));
+            menuClose.addEventListener('click', () => mobileMenu.classList.remove('active'));
+            mobileMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => mobileMenu.classList.remove('active'));
+            });
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = parseInt(urlParams.get('id'));
+        const product = products.find(p => p.id === productId);
+        const container = document.getElementById('product-detail-container');
+
+        if (!product) {
+            container.innerHTML = '<h2>Product not found.</h2> <a href="shop.html">Return to Shop</a>';
+        } else {
+            document.title = `${product.name} | Sweet Blast`;
+            renderDetails();
+        }
+
+        function renderDetails() {
+            let prodColor = '#D2AC67'; // Default Warm Gold
+            const name = product.name.toLowerCase();
+            const cat = product.category.toLowerCase();
+            const desc = product.description.toLowerCase();
+            
+            if (name.includes('rainbow') || name.includes('pinata') || name.includes('galaxy')) {
+                prodColor = '#AB47BC'; // Rainbow/Galaxy Purple fallback
+            } else if (name.includes('silver') || name.includes('swan') || name.includes('midnight') || name.includes('marble')) {
+                prodColor = '#B0BEC5'; // Silver or Marble
+            } else if (name.includes('diamond') || name.includes('crystal')) {
+                prodColor = '#81D4FA'; // Diamond blue
+            } else if (name.includes('pearl') || name.includes('blossom') || name.includes('floral') || name.includes('rose') || name.includes('macaron')) {
+                prodColor = '#F48FB1'; // Pearl pink
+            } else if (name.includes('geometric') || name.includes('abstract')) {
+                prodColor = '#4FC3F7'; // Geometric Blue
+            } else if (name.includes('royal') || name.includes('lace') || name.includes('reveal')) {
+                prodColor = '#CE93D8'; // Royal Purple / Reveal Mix
+            } else if (name.includes('stork')) {
+                prodColor = '#4DD0E1'; // Soft Teal/White theme for Stork
+            } else if (name.includes('jungle') || name.includes('safari') || name.includes('pistachio') || name.includes('christmas') || name.includes('yule')) {
+                prodColor = '#2e7d32'; // Fresh Green
+            } else if (name.includes('superhero')) {
+                prodColor = '#e53935'; // Superhero Red
+            } else if (name.includes('space') || name.includes('rocket')) {
+                prodColor = '#3949ab'; // Space Indigo
+            } else if (name.includes('mermaid') || name.includes('sea')) {
+                prodColor = '#00ACC1'; // Mermaid Teal
+            } else if (name.includes('racing') || name.includes('track')) {
+                prodColor = '#d84315'; // Racing Orange/Red
+            } else if (name.includes('blue') || name.includes('prince') || name.includes('cloud') || cat.includes('baby') || desc.includes('blue')) {
+                prodColor = '#42a5f5'; // Vibrant Blue
+            } else if (name.includes('pink') || name.includes('strawberry') || name.includes('berry') || name.includes('fruit') || desc.includes('strawberry')) {
+                prodColor = '#ec407a'; // Berry Pink
+            } else if (name.includes('red velvet') || desc.includes('velvet')) {
+                prodColor = '#c62828'; // Deep Red
+            } else if (name.includes('chocolate') || name.includes('dark') || desc.includes('chocolate') || name.includes('truffle') || name.includes('lava') || name.includes('tsunami') || name.includes('pull')) {
+                prodColor = '#8D6E63'; // Rich Chocolate Brown
+            } else if (name.includes('bento')) {
+                prodColor = '#ffb74d'; // Soft Peach for Bento
+            } else if (name.includes('biscoff') || name.includes('lotus')) {
+                prodColor = '#ff9800'; // Caramel Orange
+            } else if (name.includes('mango') || name.includes('passion')) {
+                prodColor = '#ffca28'; // Mango Yellow
+            } else if (name.includes('gold') || name.includes('yellow') || name.includes('pineapple') || name.includes('lemon') || name.includes('butter') || name.includes('diwali') || name.includes('rakhi') || name.includes('oat') || name.includes('organic') || cat.includes('wedding')) {
+                prodColor = '#fbc02d'; // Golden Yellow
+            } else if (cat.includes('kids')) {
+                prodColor = '#c62828'; // Kids fallback Red
+            } else if (cat.includes('birthday')) {
+                prodColor = '#D2AC67'; // Celebration Gold
+            } else if (cat.includes('wedding') || cat.includes('designer')) {
+                prodColor = '#9c7a10'; // Royal Gold
+            }
+
+            const fontPool = ['Abril Fatface', 'Lobster', 'Pacifico', 'Permanent Marker', 'Righteous', 'Bebas Neue', 'Shadows Into Light', 'Sacramento', 'Dancing Script', 'Cinzel', 'Oswald', 'Playfair Display', 'Caveat', 'Comfortaa', 'Indie Flower'];
+            const chosenFont = fontPool[product.id % fontPool.length];
+
+            container.innerHTML = `
+                <div class="product-detail-grid animate">
+                    <div class="product-visuals">
+                        <img src="${encodeURI(product.image)}" alt="${product.name}" class="main-img" id="mainImage">
+                    </div>
+                    <div class="product-meta">
+                        <span id="product-category" style="color:${prodColor}; font-weight:600; text-transform:uppercase; letter-spacing: 1px; font-family: 'Comfortaa';"></span>
+                        <h1 id="product-title" style="color: ${prodColor}; margin-bottom: 0.5rem; font-family: '${chosenFont}';"></h1>
+                        <p id="product-price" style="font-size: 2rem; color: var(--text);"></p>
+                        <p class="description" id="product-desc"></p>
+                        
+                        <div class="selection-group">
+                            <span class="selection-label" style="color: ${prodColor}">Select Flavour</span>
+                            <div class="flavor-btns" id="flavor-selection">
+                                ${product.flavors.map((f, i) => `<button class="small-btn ${i === 0 ? 'active' : ''}" data-val="${f}">${f}</button>`).join('')}
+                            </div>
+                        </div>
+
+                        <div class="selection-group">
+                            <span class="selection-label" style="color: ${prodColor}">Choose Cake Size</span>
+                            <div class="size-btns has-selection" id="size-selection">
+                                ${product.sizes.map((s, i) => {
+                                    const emojis = { '250g': '🧁', '300g': '🍰', '500g': '🎂', '1kg': '🎖️🎂', '2kg': '🎀🎂', '3kg': '👑🎂' };
+                                    return `<button class="size-btn ${i === 0 ? 'active' : ''}" data-val="${s}"><div class="emoji">${emojis[s] || '🍰'}</div><span>${s}</span></button>`;
+                                }).join('')}
+                            </div>
+                        </div>
+
+                        <div class="quantity-control">
+                            <div class="qty-box">
+                                <button onclick="changeQty(-1)">-</button>
+                                <input type="number" id="qty" value="1" min="1">
+                                <button onclick="changeQty(1)">+</button>
+                            </div>
+                            <button class="btn" id="add-to-cart-big" style="flex: 1;">Add to Cart <i data-lucide="plus"></i></button>
+                        </div>
+
+                        <div style="margin-top: 3rem; background: rgba(212, 175, 55, 0.08); border-radius: 25px; padding: 1.5rem; border: 1px dashed var(--primary); display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                            <div style="display: flex; gap: 10px;"><div>🚚</div><div><h5 style="margin:0; font-size:0.9rem;">Fast Delivery</h5><p style="margin:0; font-size:0.75rem; opacity:0.7;">Fresh within 24h</p></div></div>
+                            <div style="display: flex; gap: 10px;"><div>🥇</div><div><h5 style="margin:0; font-size:0.9rem;">Premium</h5><p style="margin:0; font-size:0.75rem; opacity:0.7;">Belgian chocolate</p></div></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+
+            lucide.createIcons();
+            attachListeners();
+            
+            // Typewriter sequence
+            const elements = [
+                { id: 'product-category', text: product.category },
+                { id: 'product-title', text: product.name },
+                { id: 'product-price', text: `₹${product.price}` },
+                { id: 'product-desc', text: product.description }
+            ];
+            let currentIdx = 0;
+            function startType() {
+                if (currentIdx >= elements.length) return;
+                const entry = elements[currentIdx];
+                const el = document.getElementById(entry.id);
+                if (!el) { currentIdx++; startType(); return; }
+                el.innerHTML = '';
+                let i = 0;
+                function type() {
+                    if (i < entry.text.length) {
+                        const span = document.createElement('span');
+                        span.className = 'zoom-char';
+                        span.innerHTML = entry.text[i] === ' ' ? '&nbsp;' : entry.text[i];
+                        el.appendChild(span);
+                        i++;
+                        setTimeout(type, 25);
+                    } else { currentIdx++; setTimeout(startType, 200); }
+                }
+                type();
+            }
+            setTimeout(startType, 600); 
+        }
+
+        function attachListeners() {
+            const flavorBtns = document.querySelectorAll('#flavor-selection button');
+            flavorBtns.forEach(btn => btn.addEventListener('click', () => {
+                flavorBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const selectedFlavor = btn.dataset.val;
+
+                // Update Main Image
+                if (product.flavorImages && product.flavorImages[selectedFlavor]) {
+                    const mainImage = document.getElementById('mainImage');
+                    mainImage.style.opacity = 0;
+                    setTimeout(() => {
+                        mainImage.src = encodeURI(product.flavorImages[selectedFlavor]);
+                        mainImage.style.opacity = 1;
+                    }, 150);
+                }
+
+                // Dynamic Background Video Logic
+                const bgVideo = document.getElementById('bgFlavorVideo');
+                
+                const tryPlay = (src, useOpacity = 0.5) => {
+                    return new Promise((resolve, reject) => {
+                        bgVideo.src = encodeURI(src);
+                        bgVideo.load();
+                        bgVideo.oncanplay = () => {
+                            bgVideo.play()
+                                .then(() => {
+                                    bgVideo.style.opacity = useOpacity;
+                                    resolve();
+                                })
+                                .catch(e => reject(e));
+                        };
+                        bgVideo.onerror = (e) => reject(e);
+                    });
+                };
+
+                const dir = product.image.substring(0, product.image.lastIndexOf('/'));
+                const flavorVideoName = selectedFlavor.replace(/\s+/g, '%20');
+                const flavorVideoSrc = product.flavorVideos && product.flavorVideos[selectedFlavor] 
+                    ? product.flavorVideos[selectedFlavor] 
+                    : `${dir}/${flavorVideoName}.mp4`;
+
+                bgVideo.style.opacity = "0";
+                
+                tryPlay(flavorVideoSrc, 0.95).catch(() => {
+                    // Try Category Fallback
+                    const catVideoSrc = `${dir}/${encodeURIComponent(product.category)}.mp4`;
+                    tryPlay(catVideoSrc, 0.85).catch(() => {
+                        bgVideo.style.opacity = "0";
+                        bgVideo.pause();
+                    });
+                });
+            }));
+
+            // Auto-click first flavor to load initial video/assets
+            const activeFlavor = document.querySelector('#flavor-selection button.active');
+            if (activeFlavor) activeFlavor.click();
+
+            const sizeBtns = document.querySelectorAll('#size-selection button');
+            sizeBtns.forEach(btn => btn.addEventListener('click', () => {
+                sizeBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById('size-selection').classList.add('has-selection');
+            }));
+
+            document.getElementById('add-to-cart-big').addEventListener('click', () => {
+                window.location.href = 'checkout.html';
+            });
+        }
+
+        window.changeQty = (delta) => {
+            const input = document.getElementById('qty');
+            let val = parseInt(input.value) + delta;
+            if (val < 1) val = 1;
+            input.value = val;
+        };
+
+        function updateCartCount() {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            document.querySelector('.cart-count').innerText = cart.length;
+        }
+        updateCartCount();
+        lucide.createIcons();
+    </script>
+</body>
+</html>

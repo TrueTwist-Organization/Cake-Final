@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout | Sweet Blast</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .checkout-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 4rem;
+        }
+
+        .form-section {
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: var(--soft-shadow);
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .step-indicator::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #eee;
+            z-index: 1;
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            z-index: 2;
+            flex: 1;
+        }
+
+        .step-num {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #666;
+            transition: 0.3s;
+        }
+
+        .step.active .step-num {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 0 0 5px rgba(248, 192, 200, 0.3);
+        }
+
+        .step-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #999;
+        }
+
+        .step.active .step-label {
+            color: var(--accent);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            font-family: inherit;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text);
+        }
+
+        .payment-option {
+            border: 2px solid #eee;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .payment-option:hover {
+            border-color: var(--primary);
+        }
+
+        .payment-option.selected {
+            border-color: var(--primary);
+            background: rgba(197, 160, 89, 0.05);
+        }
+
+        .order-summary {
+            background: rgba(20, 10, 15, 0.95);
+            border: 1px solid var(--glass-border);
+            padding: 2.5rem;
+            border-radius: 20px;
+            height: fit-content;
+            box-shadow: var(--soft-shadow);
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .checkout-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="images/logo.png">
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <a href="index.html" class="brand"><img src="images/logo.png" alt="Sweet Blast" class="logo-img"></a>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="photo-cake.html">Photo Cake</a></li>
+                    <li><a href="collection.html">Collection</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="header-icons">
+                <a href="cart.html" class="cart-icon">
+                    <i data-lucide="shopping-bag"></i>
+                    <span class="cart-count">0</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <section class="section">
+        <div class="container">
+            <h1 style="margin-bottom: 3rem; color: var(--primary);">Complete Your Order</h1>
+
+            <div class="checkout-grid">
+                <div class="form-section">
+                    <div class="step-indicator">
+                        <div class="step active" id="step1-head">
+                            <div class="step-num">1</div>
+                            <div class="step-label">Address</div>
+                        </div>
+                        <div class="step" id="step2-head">
+                            <div class="step-num">2</div>
+                            <div class="step-label">Payment</div>
+                        </div>
+                        <div class="step" id="step3-head">
+                            <div class="step-num">3</div>
+                            <div class="step-label">Success</div>
+                        </div>
+                    </div>
+
+                    <!-- Step 1: Address Details -->
+                    <div id="step-address">
+                        <h2 style="margin-bottom: 2rem;">Shipping Details</h2>
+                        <form id="address-form">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                <div class="form-group">
+                                    <label>Full Name</label>
+                                    <input type="text" id="custName" required placeholder="John Doe">
+                                </div>
+                                <div class="form-group">
+                                    <label>Phone Number</label>
+                                    <input type="tel" id="custPhone" required placeholder="+91 98765 43210">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Delivery Address</label>
+                                <textarea id="custAddr" rows="3" required placeholder="Apartment, Street, City"></textarea>
+                            </div>
+                            <button type="submit" class="btn" style="width: 100%; margin-top: 2rem;">Continue to Payment</button>
+                        </form>
+                    </div>
+
+                    <!-- Step 2: Payment Details -->
+                    <div id="step-payment" style="display: none;">
+                        <h2 style="margin-bottom: 2rem;">Select Payment Method</h2>
+                        
+                        <div class="payment-option" onclick="selectPayment('online')" id="opt-online">
+                            <i data-lucide="credit-card"></i>
+                            <div>
+                                <strong>Online Payment (UPI / Card / NetBanking)</strong>
+                                <p style="font-size: 0.8rem; opacity: 0.6;">Pay securely via our payment gateway</p>
+                            </div>
+                        </div>
+
+                        <div class="payment-option" onclick="selectPayment('cod')" id="opt-cod">
+                            <i data-lucide="banknote"></i>
+                            <div>
+                                <strong>Cash on Delivery (COD)</strong>
+                                <p style="font-size: 0.8rem; opacity: 0.6;">Pay when your fresh cake reaches home</p>
+                            </div>
+                        </div>
+
+                        <!-- Online Payment Fields (Hidden by default) -->
+                        <div id="online-fields" style="display: none; margin-top: 2rem; padding: 2rem; background: #f9f9f9; border-radius: 15px;">
+                            <label>Card Number / UPI ID</label>
+                            <input type="text" placeholder="XXXX XXXX XXXX XXXX or example@upi" style="margin-bottom: 1rem;">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                <input type="text" placeholder="MM/YY">
+                                <input type="password" placeholder="CVV">
+                            </div>
+                        </div>
+
+                        <div id="cod-msg" style="display: none; margin-top: 1rem; color: green; font-weight: 500;">
+                            <i data-lucide="check-circle" size="14"></i> Ready for COD. Total collection at delivery: <span id="cod-amt"></span>
+                        </div>
+
+                        <div style="display: flex; gap: 1rem; margin-top: 3rem;">
+                            <button class="btn" style="background: #eee; color: #333;" onclick="prevStep()">Back</button>
+                            <button class="btn" style="flex: 1;" id="final-btn" onclick="processOrder()" disabled>Complete Purchase</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Success Simulation -->
+                    <div id="step-success" style="display: none; text-align: center; padding: 3rem 0;">
+                        <div style="width: 80px; height: 80px; background: #e6ffed; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 2rem; color: #28a745;">
+                            <i data-lucide="check-circle" size="40"></i>
+                        </div>
+                        <h2 style="font-size: 2rem; margin-bottom: 1rem;">Order Placed! 🚀</h2>
+                        <p>Your order has been received successfully and <strong>our Admin has been notified!</strong></p>
+                        <p>We'll contact you shortly at <strong id="modalPhone"></strong> to confirm your order and delivery details.</p>
+                        <div style="background: white; padding: 2rem; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: left; max-width: 450px; margin: 0 auto;">
+                            <p style="margin-bottom: 10px; border-bottom: 2px dashed #eee; padding-bottom: 10px;">
+                                <strong>Order ID:</strong> <span id="final-order-id" style="color: var(--accent);">SB-2026-X</span>
+                            </p>
+                            <p style="margin-bottom: 5px;"><strong>Customer:</strong> <span id="display-name" style="color: var(--accent);"></span></p>
+                            <p><strong>Products:</strong> <span id="display-items" style="color: var(--accent); font-size: 0.9rem;"></span></p>
+                        </div>
+                        <a href="index.html" class="btn" style="margin-top: 3rem;">Return Home</a>
+                    </div>
+                </div>
+
+                <div class="order-summary">
+                    <h2 style="margin-bottom: 2rem;">Order Summary</h2>
+                    <div id="summary-items"></div>
+                    
+                    <div style="margin-top: 2rem; border-top: 2px solid rgba(0,0,0,0.1); padding-top: 1.5rem;">
+                        <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 1.5rem;">
+                            <span>Grand Total</span>
+                            <span id="final-total">$0.00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script type="module">
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const summaryItems = document.getElementById('summary-items');
+        let total = 0;
+
+        if (cart.length === 0) {
+            window.location.href = 'shop.html';
+        }
+
+        cart.forEach(item => {
+            const itemTotal = item.price * item.quantity;
+            total += itemTotal;
+            const div = document.createElement('div');
+            div.className = 'order-item';
+            div.innerHTML = `
+                <div>
+                    <strong>${item.name} x ${item.quantity}</strong><br>
+                    <small>${item.selectedFlavor}, ${item.selectedSize}</small>
+                </div>
+                <span>₹${itemTotal}</span>
+            `;
+            summaryItems.appendChild(div);
+        });
+
+        // Add tax and shipping
+        const grandTotal = total + (total * 0.05) + 49;
+        const totalStr = `₹${grandTotal.toFixed(0)}`;
+        document.getElementById('final-total').innerText = totalStr;
+        document.getElementById('cod-amt').innerText = totalStr;
+
+        // Step Navigation Logic
+        let selectedMethod = null;
+
+        document.getElementById('address-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            nextStep();
+        });
+
+        window.nextStep = () => {
+            document.getElementById('step-address').style.display = 'none';
+            document.getElementById('step-payment').style.display = 'block';
+            document.getElementById('step2-head').classList.add('active');
+        };
+
+        window.prevStep = () => {
+            document.getElementById('step-address').style.display = 'block';
+            document.getElementById('step-payment').style.display = 'none';
+            document.getElementById('step2-head').classList.remove('active');
+        };
+
+        window.selectPayment = (method) => {
+            selectedMethod = method;
+            document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected'));
+            document.getElementById(`opt-${method}`).classList.add('selected');
+            
+            // Show fields
+            document.getElementById('online-fields').style.display = method === 'online' ? 'block' : 'none';
+            document.getElementById('cod-msg').style.display = method === 'cod' ? 'block' : 'none';
+            
+            // Enable button
+            document.getElementById('final-btn').disabled = false;
+        };
+
+        window.processOrder = () => {
+            const btn = document.getElementById('final-btn');
+            btn.innerHTML = `<i data-lucide="loader" class="spin"></i> Processing...`;
+            lucide.createIcons();
+
+            // Simulate loading
+            setTimeout(() => {
+                document.getElementById('step-payment').style.display = 'none';
+                document.getElementById('step-success').style.display = 'block';
+                document.getElementById('step3-head').classList.add('active');
+                
+                const name = document.getElementById('custName').value;
+                const msg = selectedMethod === 'online' 
+                    ? `Payment successful! Your order will be prepared and delivered shortly.`
+                    : `Order confirmed via COD! Please keep ${totalStr} ready at delivery.`;
+                
+                document.getElementById('success-msg').innerText = `Hey ${name}, ${msg}`;
+                
+                const orderId = 'SB-2026-' + (Math.floor(Math.random()*90000) + 10000);
+                document.getElementById('final-order-id').textContent = orderId;
+                
+                // Notify Admin (Simulated Browser Notification)
+                const phone = document.getElementById('custPhone').value;
+                const orderData = {
+                    id: orderId,
+                    type: 'Shop Order',
+                    name: name,
+                    phone: phone,
+                    size: 'Various',
+                    flavour: 'Multiple Items',
+                    total: totalStr,
+                    date: 'Standard Delivery',
+                    time: new Date().toLocaleString()
+                };
+                const allOrders = JSON.parse(localStorage.getItem('admin_orders') || '[]');
+                allOrders.unshift(orderData);
+                localStorage.setItem('admin_orders', JSON.stringify(allOrders));
+
+                if ("Notification" in window && Notification.permission === "granted") {
+                    new Notification("🍰 New Shop Order Received!", { body: `Order from ${name} (${phone}) for ${totalStr}` });
+                }
+                
+                localStorage.removeItem('cart');
+            }, 2000);
+        };
+
+        lucide.createIcons();
+    </script>
+</body>
+</html>

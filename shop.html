@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* Dynamic Theme Tokens */
+        :root { --theme-accent: var(--accent); }
+        
+        .page-banner-glass h1 {
+            font-size: clamp(2rem, 8vw, 3.5rem);
+            font-weight: 800;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            color: var(--theme-accent);
+            text-shadow: 0 0 20px rgba(255,255,255,0.4);
+        }
+
+        .hero-char {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: charIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            transition: all 0.3s ease;
+        }
+        .hero-char:hover {
+            transform: scale(1.6) translateY(-15px) !important;
+            filter: brightness(1.2);
+            z-index: 10;
+        }
+        @keyframes charIn { to { opacity: 1; transform: translateY(0); } }
+        
+        .page-banner-glass {
+            position: relative;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            transition: all 0.6s ease-in-out;
+            min-height: 350px; /* Slight increase in height */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+        }
+
+        .page-banner-glass::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.05); /* Extremely minimal overlay */
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+            z-index: -1;
+            filter: brightness(1.1) contrast(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .page-banner-glass {
+                padding: 100px 0 60px !important;
+            }
+            .product-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 1.5rem;
+                padding: 0 10px;
+            }
+            .section-soft-tint h2 {
+                font-size: 1.8rem !important;
+                margin-bottom: 2rem !important;
+                text-align: center;
+            }
+        }
+
+    </style>
+    <title>Shop All Cakes | Sweet Blast</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="images/logo.png">
+    <script src="assets/js/theme.js"></script>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <a href="index.html" class="brand"><img src="images/logo.png" alt="Sweet Blast" class="logo-img"></a>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="photo-cake.html">Photo Cake</a></li>
+                    <li><a href="collection.html">Collection</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="header-icons">
+                <a href="#"><i data-lucide="search"></i></a>
+                <a href="cart.html" class="cart-icon">
+                    <i data-lucide="shopping-bag"></i>
+                    <span class="cart-count">0</span>
+                </a>
+                <a href="#"><i data-lucide="user"></i></a>
+                <button class="mobile-menu-trigger" id="mobile-menu-open"><i data-lucide="menu"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobile-menu">
+        <button class="mobile-menu-close" id="mobile-menu-close"><i data-lucide="x" size="32"></i></button>
+        <nav class="mobile-nav-links">
+            <a href="index.html">Home</a>
+            <a href="photo-cake.html">Photo Cake</a>
+            <a href="collection.html">Collection</a>
+            <a href="contact.html">Contact</a>
+        </nav>
+    </div>
+
+    <!-- Page Banner -->
+    <section class="section page-banner-glass" style="padding: 120px 0 80px;">
+        <div class="container" style="text-align: center;">
+            <h1 id="shop-title">Our Bakery Collection</h1>
+            <p class="page-banner-desc" id="shop-desc">Explore our delicious treats, baked fresh for you every single day</p>
+        </div>
+    </section>
+
+
+    <!-- Shop Content -->
+    <section class="section" style="padding-top: 0;">
+        <div class="container">
+            <!-- Shop Grid -->
+            <div class="product-grid" id="shop-grid">
+                <!-- Dynamically Rendered -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Recommended Section (Always visible) -->
+    <section class="section section-soft-tint" style="padding: 80px 0;">
+        <div class="container">
+            <h2 style="margin-bottom: 3rem; color: var(--accent); font-size: 2.5rem;">You May Also Like...</h2>
+            <div class="product-grid" id="recommended-grid">
+                <!-- Other products show here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container footer-grid">
+            <div class="footer-logo">
+                <img src="images/logo.png" alt="Sweet Blast" class="footer-logo-img">
+                <p style="color: rgba(255, 255, 255, 0.85);">Making your celebrations sweeter since 2010. Handcrafted, fresh, and premium cakes delivered right to your door.</p>
+                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                    <a href="https://instagram.com" target="_blank" style="background: var(--white); width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--secondary); transition: all 0.3s ease; box-shadow: 0 5px 15px rgba(0,0,0,0.1);" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--secondary)'">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+                    </a>
+                    <a href="https://facebook.com" target="_blank" style="background: var(--white); width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--secondary); transition: all 0.3s ease; box-shadow: 0 5px 15px rgba(0,0,0,0.1);" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--secondary)'">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                    </a>
+                    <a href="https://twitter.com" target="_blank" style="background: var(--white); width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--secondary); transition: all 0.3s ease; box-shadow: 0 5px 15px rgba(0,0,0,0.1);" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--secondary)'">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>
+                    </a>
+                </div>
+            </div>
+            <div>
+                <h4 class="footer-title">Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="shop.html">Shop</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="footer-title">Contact Us</h4>
+                <ul class="footer-links">
+                    <li><i data-lucide="map-pin" size="16"></i> 123 Baker St, Sweet City</li>
+                    <li><i data-lucide="phone" size="16"></i> +1 234 567 890</li>
+                    <li><i data-lucide="mail" size="16"></i> hello@sweetblast.com</li>
+                </ul>
+            </div>
+        </div>
+        <div class="container copyright">
+            <p>&copy; 2026 Sweet Blast Bakery. All fresh and baked with love.</p>
+        </div>
+    </footer>
+
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        <span id="notif-text">Item added! 🍰</span>
+    </div>
+
+    <script type="module">
+        import products from './assets/js/products.js';
+
+        // Mobile Menu Logic
+        const menuOpen = document.getElementById('mobile-menu-open');
+        const menuClose = document.getElementById('mobile-menu-close');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        if (menuOpen && menuClose && mobileMenu) {
+            menuOpen.addEventListener('click', () => mobileMenu.classList.add('active'));
+            menuClose.addEventListener('click', () => mobileMenu.classList.remove('active'));
+            mobileMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => mobileMenu.classList.remove('active'));
+            });
+        }
+        
+        function initShop() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const selectedCat = urlParams.get('cat') || 'All';
+            updateShop(selectedCat);
+        }
+
+        function updateShop(category) {
+            const shopGrid = document.getElementById('shop-grid');
+            const shopTitle = document.getElementById('shop-title');
+            const shopDesc = document.getElementById('shop-desc');
+
+            let displayTitle = category === 'All' ? "Our Bakery Collection" : category;
+            let filteredProducts = category === 'All' 
+                ? products.filter(p => !['Gift Combos', 'Photo Cakes', 'Photo Cake'].includes(p.category.trim())) 
+                : products.filter(p => p.category === category);
+
+            // Update theme colors
+            let themeColor = '#ff4081'; // Default
+            const bannerHeader = document.querySelector('.page-banner-glass');
+            
+            // Set global background image for the banner
+            bannerHeader.style.backgroundImage = "url('images/birthday-bg.jpg')";
+            bannerHeader.style.backgroundAttachment = "fixed";
+            bannerHeader.style.backgroundPosition = "center";
+            bannerHeader.style.backgroundSize = "cover";
+            
+            if (category !== 'All') {
+                const catLower = category.toLowerCase();
+                 if (catLower.includes('birthday')) themeColor = '#D2AC67';
+                else if (catLower.includes('wedding')) themeColor = '#9c7a10';
+                else if (catLower.includes('cheesecake') || catLower.includes('lemon')) themeColor = '#fbc02d';
+                else if (catLower.includes('designer')) themeColor = '#d4af37';
+                else if (catLower.includes('baby')) themeColor = '#1e88e5';
+                else if (catLower.includes('kids')) themeColor = '#c62828';
+            }
+            
+            document.documentElement.style.setProperty('--theme-accent', themeColor);
+            shopTitle.style.color = themeColor;
+
+            // Word-Aware Typewriter Logic
+            const words = displayTitle.split(' ');
+            const isRainbow = displayTitle.toLowerCase().includes('cupcake');
+            const colors = ['#ff0000', '#ff8c00', '#ffd700', '#32cd32', '#1e90ff', '#4b0082', '#9400d3'];
+            let charCounter = 0;
+
+            shopTitle.innerHTML = words.map(word => {
+                const chars = word.split('').map(char => {
+                    const color = isRainbow ? colors[charCounter % colors.length] : 'inherit';
+                    const delay = charCounter * 0.05;
+                    charCounter++;
+                    const shadow = isRainbow ? `0 0 15px ${color}44` : 'none';
+                    return `<span class="hero-char" style="color: ${color}; animation-delay: ${delay}s; text-shadow: ${shadow};">${char}</span>`;
+                }).join('');
+                return `<span style="white-space: nowrap; display: inline-block;">${chars}</span>`;
+            }).join(' ');
+
+            renderProducts(filteredProducts, shopGrid);
+        }
+
+        function renderProducts(productsToRender, container) {
+            container.innerHTML = '';
+            productsToRender.forEach(product => {
+                const card = createProductCard(product);
+                container.appendChild(card);
+            });
+
+            // Handle Recommended Grid (Show products from diverse categories)
+            const recGrid = document.getElementById('recommended-grid');
+            recGrid.innerHTML = '';
+            
+            // Get all unique categories except excluded ones
+            const allCats = [...new Set(products.map(p => p.category.trim()))].filter(c => !['Gift Combos', 'Photo Cakes', 'Photo Cake'].includes(c));
+            
+            let recommendedPool = [];
+            
+            // categories to get different variety each time
+            if (allCats.length > 0) {
+                const shuffledCats = allCats.sort(() => 0.5 - Math.random());
+                shuffledCats.forEach(cat => {
+                    const prod = products.find(p => p.category === cat);
+                    if (prod) recommendedPool.push(prod);
+                });
+            } else {
+                // If All is selected or no other cats exist, pick diverse ones from All
+                allCats.sort(() => 0.5 - Math.random()).forEach(cat => {
+                    const prod = products.find(p => p.category === cat);
+                    if (prod) recommendedPool.push(prod);
+                });
+            }
+
+            // Ensure we have exactly 4 diverse items (if possible)
+            const displayRecs = recommendedPool.slice(0, 4);
+
+            displayRecs.forEach(product => {
+                const card = createProductCard(product);
+                recGrid.appendChild(card);
+            });
+
+            lucide.createIcons();
+        }
+
+        function createProductCard(product) {
+            const card = document.createElement('div');
+            card.className = 'product-card animate';
+            
+            // Dynamic Color Logic
+            let prodColor = '#D2AC67'; // Default Warm Gold
+            const name = product.name.toLowerCase();
+            const cat = product.category.toLowerCase();
+            const desc = product.description.toLowerCase();
+            const isRainbow = false;
+            if (name.includes('silver') || name.includes('swan') || name.includes('midnight') || name.includes('marble')) {
+                prodColor = '#B0BEC5'; // Silver
+            } else if (name.includes('diamond') || name.includes('crystal')) {
+                prodColor = '#81D4FA'; // Diamond blue
+            } else if (name.includes('pearl') || name.includes('blossom') || name.includes('floral') || name.includes('rose') || name.includes('macaron')) {
+                prodColor = '#F48FB1'; // Pearl pink
+            } else if (name.includes('geometric') || name.includes('abstract')) {
+                prodColor = '#4FC3F7'; // Geometric Blue
+            } else if (name.includes('royal') || name.includes('lace') || name.includes('reveal')) {
+                prodColor = '#CE93D8'; // Royal Purple / Reveal Mix
+            } else if (name.includes('stork')) {
+                prodColor = '#4DD0E1'; // Soft Teal/White theme for Stork
+            } else if (name.includes('blue') || name.includes('prince') || name.includes('cloud')) {
+                prodColor = '#42a5f5'; // Vibrant Blue
+            } else if (name.includes('pink') || name.includes('strawberry') || name.includes('berry') || name.includes('fruit') || desc.includes('strawberry')) {
+                prodColor = '#ec407a'; // Berry Pink
+            } else if (name.includes('red velvet') || desc.includes('velvet') || name.includes('heart')) {
+                prodColor = '#c62828'; // Deep Red
+            } else if (name.includes('chocolate') || name.includes('choco') || name.includes('dark') || name.includes('truffle') || name.includes('black forest') || name.includes('lava') || name.includes('tsunami') || name.includes('pull') || desc.includes('chocolate')) {
+                prodColor = '#8D6E63'; // Rich Chocolate Brown
+            } else if (name.includes('bento')) {
+                prodColor = '#ffb74d'; // Soft Peach for Bento
+            } else if (name.includes('biscoff') || name.includes('lotus')) {
+                prodColor = '#ff9800'; // Caramel Orange
+            } else if (name.includes('mango') || name.includes('passion')) {
+                prodColor = '#ffca28'; // Mango Yellow
+            } else if (name.includes('gold') || name.includes('vanilla') || name.includes('yellow') || name.includes('pineapple') || name.includes('lemon') || name.includes('butter') || name.includes('caramel') || name.includes('diwali') || name.includes('rakhi') || name.includes('oat') || name.includes('organic')) {
+                prodColor = '#fbc02d'; // Golden Yellow (Vanilla included here for warmth)
+            } else if (name.includes('jungle') || name.includes('safari') || name.includes('pistachio') || name.includes('christmas') || name.includes('yule')) {
+                prodColor = '#2e7d32'; // Fresh Green
+            } else if (name.includes('superhero')) {
+                prodColor = '#e53935'; // Superhero Red
+            } else if (name.includes('space') || name.includes('rocket')) {
+                prodColor = '#3949ab'; // Space Indigo
+            } else if (name.includes('mermaid') || name.includes('sea')) {
+                prodColor = '#00ACC1'; // Mermaid Teal
+            } else if (name.includes('racing') || name.includes('track')) {
+                prodColor = '#d84315'; // Racing Orange/Red
+            } else if (cat.includes('kids')) {
+                prodColor = '#c62828'; // Kids fallback Red
+            } else if (cat.includes('baby')) {
+                prodColor = '#42a5f5'; // Baby Blue fallback
+            } else if (cat.includes('bakery') || cat.includes('biscuits')) {
+                prodColor = '#8d6e63'; // Warm Brown
+            } else if (cat.includes('occasion')) {
+                prodColor = '#d81b60'; // Rose Pink
+            } else if (cat.includes('designer') || cat.includes('wedding')) {
+                prodColor = '#d4af37'; // Designer Gold fallback
+            }
+
+            card.style.setProperty('--card-accent', prodColor);
+
+            const origPrice = product.originalPrice || (product.price + 500);
+            
+            const rainbowColors = ['#ff0000', '#ff8c00', '#ffd700', '#32cd32', '#1e90ff', '#4b0082', '#9400d3'];
+            const titleHTML = product.name.split('').map((char, index) => {
+                const charColor = isRainbow ? rainbowColors[index % rainbowColors.length] : 'inherit';
+                const shadow = isRainbow ? `0 0 10px ${charColor}33` : 'none';
+                return `<span style="color: ${charColor}; text-shadow: ${shadow}">${char === ' ' ? '&nbsp;' : char}</span>`;
+            }).join('');
+
+            const chosenFont = 'Urbanist';
+
+            card.innerHTML = `
+                ${product.discount ? `<div class="discount-badge" style="background: ${prodColor}; color: ${window.getContrastColor(prodColor)}">${product.discount}</div>` : ''}
+                <div class="product-image">
+                    <img src="${encodeURI(product.image)}" alt="${product.name}" onclick="window.location.href='product.html?id=${product.id}'" style="cursor:pointer; transition: opacity 0.08s ease;">
+                </div>
+                <div class="product-info">
+                    <h3 onclick="window.location.href='product.html?id=${product.id}'" 
+                        style="color: color-mix(in sRGB, var(--card-accent, ${isRainbow ? 'initial' : prodColor}), var(--text) 40%); 
+                               filter: drop-shadow(0 0 3px rgba(var(--bg-rgb), 0.8));
+                               cursor:pointer; font-family: '${chosenFont}'; transition: color 0.5s ease;">
+                        ${titleHTML}
+                    </h3>
+                    <div class="product-desc-preview">${product.description}</div>
+                    <div class="product-footer">
+                        <div style="display: flex; align-items: baseline; gap: 8px;">
+                            <span class="price" style="color: var(--card-accent, ${isRainbow ? '#ff4081' : prodColor}); font-weight: 800; filter: drop-shadow(0 0 1px rgba(0,0,0,0.3));">₹${product.price}</span>
+                            <span class="original-price" style="font-size: 0.9rem; text-decoration: line-through; color: #666; opacity: 0.6;">₹${origPrice}</span>
+                        </div>
+                        <div class="add-btn" onclick="addToCart(${product.id})" title="Add to Cart" style="background: ${isRainbow ? 'linear-gradient(45deg, #ff0000, #ff8c00)' : prodColor}">
+                            <i data-lucide="shopping-bag" size="18" style="color: ${isRainbow ? '#ffffff' : window.getContrastColor(prodColor)}"></i>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Hover image cycling logic for flavors
+            const imgElement = card.querySelector('.product-image img');
+            if (product.flavorImages && Object.keys(product.flavorImages).length > 1) {
+                const images = Object.values(product.flavorImages);
+                let currentIdx = 0;
+                let intervalId = null;
+
+                const startCycle = () => {
+                    if (intervalId) return;
+                    intervalId = setInterval(() => {
+                        currentIdx = (currentIdx + 1) % images.length;
+                        imgElement.style.opacity = '0.3';
+                        setTimeout(() => {
+                            imgElement.src = encodeURI(images[currentIdx]);
+                            imgElement.style.opacity = 1;
+                        }, 150);
+                    }, 1000); 
+                };
+
+                const stopCycle = () => {
+                    if (intervalId) {
+                        clearInterval(intervalId);
+                        intervalId = null;
+                        imgElement.style.opacity = '0.3';
+                        setTimeout(() => {
+                            imgElement.src = encodeURI(product.image);
+                            imgElement.style.opacity = 1;
+                        }, 150);
+                    }
+                };
+
+                card.addEventListener('mouseenter', startCycle);
+                card.addEventListener('mouseleave', stopCycle);
+
+                // Auto-cycle for Mobile Intersection
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting && window.innerWidth < 1024) {
+                            startCycle();
+                        } else if (window.innerWidth < 1024) {
+                            stopCycle();
+                        }
+                    });
+                }, { threshold: 0.5 });
+                observer.observe(card);
+            }
+
+            return card;
+        }
+
+        // Add to Cart Functionality
+        window.addToCart = (productId) => {
+            const product = products.find(p => p.id === productId);
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            
+            cart.push({
+                ...product,
+                selectedFlavor: product.flavors[0],
+                selectedSize: product.sizes[0],
+                quantity: 1,
+                cartId: Date.now()
+            });
+            
+            localStorage.setItem('cart', JSON.stringify(cart));
+            window.location.href = 'checkout.html';
+        };
+
+        // Initialize
+        initShop();
+        lucide.createIcons();
+    </script>
+    
+    <script>
+        function updateCartCount() {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const countEl = document.querySelector('.cart-count');
+            if (countEl) countEl.innerText = cart.length;
+        }
+        updateCartCount();
+    </script>
+</body>
+</html>
