@@ -500,7 +500,7 @@ const products = [
     "originalPrice": 8500,
     "discount": "PREMIUM GIFT",
     "rating": 4.9,
-    "image": "/images/wedding_cake.png",
+    "image": "/images/birthday_cake.png",
     "description": "The Royal Lace Wedding cake accompanied by a luxury box of 24 handcrafted Belgian chocolates. The ultimate celebration set.",
     "flavors": [
       "Vanilla",
@@ -717,7 +717,7 @@ const products = [
     "flavorImages": {
       "Pistachio": "/images/Bakery/Artisan French Macarons (Box of 12)/Pistachio.png",
       "Rose": "/images/Bakery/Artisan French Macarons (Box of 12)/Rose.png",
-      "Salted Caramel": "/images/Bakery/Artisan French Macarons (Box of 12)/Salted Caramel.png"
+      "Salted Caramel": "/images/Bakery/Artisan French Macarons (Box of 12)/Pistachio.png"
     },
     "flavorVideos": {
       "Pistachio": "/images/Bakery/Artisan French Macarons (Box of 12)/Pistachio.mp4"
@@ -1138,7 +1138,6 @@ const products = [
       "1kg"
     ]
   },
-
   {
     "id": 47,
     "name": "Walnut Fudge Brownie Box",
@@ -1283,7 +1282,6 @@ const products = [
       "Rasmalai Fusion": "/images/Occasions/Grand Diwali Special/Rasmalai Fusion.mp4"
     }
   },
-
   {
     "id": 57,
     "name": "Rakhi Celebration Mini",
